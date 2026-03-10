@@ -1,30 +1,53 @@
-import { DashboardSidebar } from '../components/DashboardSidebar';
-import { useAuth } from '../context/AuthContext';
-import { Bell, FileText, Layers, Send, ArrowRight, Calendar } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { DashboardSidebar } from "../components/DashboardSidebar";
+import { useAuth } from "../context/AuthContext";
+import {
+  Bell,
+  FileText,
+  Layers,
+  Send,
+  ArrowRight,
+  Calendar,
+} from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router";
 
 export function StudentDashboard() {
   const { user, assignments, announcements } = useAuth();
-  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState("All");
 
-  const categories = ['All', ...Array.from(new Set(assignments.map(a => a.category)))];
+  const categories = [
+    "All",
+    ...Array.from(new Set(assignments.map((a) => a.category))),
+  ];
 
-  const filteredAssignments = categoryFilter === 'All'
-    ? assignments
-    : assignments.filter(a => a.category === categoryFilter);
+  const filteredAssignments =
+    categoryFilter === "All"
+      ? assignments
+      : assignments.filter((a) => a.category === categoryFilter);
 
   const stats = [
-    { label: 'Announcements', value: announcements.length, color: 'from-blue-600 to-blue-800' },
-    { label: 'Assignments', value: assignments.length, color: 'from-purple-600 to-purple-800' },
-    { label: 'Categories', value: categories.length - 1, color: 'from-teal-600 to-teal-800' },
-    { label: 'Submissions', value: 5, color: 'from-orange-600 to-orange-800' },
+    {
+      label: "Announcements",
+      value: announcements.length,
+      color: "from-blue-600 to-blue-800",
+    },
+    {
+      label: "Assignments",
+      value: assignments.length,
+      color: "from-purple-600 to-purple-800",
+    },
+    {
+      label: "Categories",
+      value: categories.length - 1,
+      color: "from-teal-600 to-teal-800",
+    },
+    { label: "Submissions", value: 5, color: "from-orange-600 to-orange-800" },
   ];
 
   return (
     <div className="min-h-screen flex">
       <DashboardSidebar />
-      
+
       <main className="flex-1 lg:ml-60 pt-14 lg:pt-0">
         <div className="max-w-7xl mx-auto p-4 sm:p-6">
           {/* Header */}
@@ -33,20 +56,37 @@ export function StudentDashboard() {
               <h1 className="text-xl sm:text-2xl font-semibold text-foreground flex items-center gap-2">
                 <span>👋</span> Welcome, {user?.name?.toUpperCase()}
               </h1>
-              <p className="text-sm text-muted-foreground mt-1">{user?.email}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {user?.email}
+              </p>
             </div>
             <div className="flex items-center gap-4 sm:gap-6">
               <div className="text-left sm:text-right">
                 <p className="text-xs text-muted-foreground mb-1">Status</p>
-                <span className="px-3 py-1 rounded text-xs font-medium bg-green-500 text-white">
-                  RESUME_SHORTLISTED
+                <span
+                  className={`px-3 py-1 rounded text-xs font-medium text-white ${
+                    user?.applicationStatus === "shortlisted"
+                      ? "bg-green-500"
+                      : user?.applicationStatus === "rejected"
+                        ? "bg-red-500"
+                        : "bg-yellow-500"
+                  }`}
+                >
+                  {user?.applicationStatus?.toUpperCase() || "PENDING"}
                 </span>
               </div>
               <div className="text-left sm:text-right">
-                <p className="text-xs text-muted-foreground mb-1">Profile Completion</p>
-                <p className="text-xl font-semibold text-foreground">100%</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  Profile Completion
+                </p>
+                <p className="text-xl font-semibold text-foreground">
+                  {user?.profileCompletion || 0}%
+                </p>
                 <div className="w-20 h-1 bg-secondary rounded-full mt-1">
-                  <div className="h-full bg-foreground rounded-full" style={{ width: '100%' }} />
+                  <div
+                    className="h-full bg-foreground rounded-full"
+                    style={{ width: `${user?.profileCompletion || 0}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -79,7 +119,9 @@ export function StudentDashboard() {
                   </div>
                   <div className="flex items-center gap-2 ml-2">
                     <FileText className="w-4 h-4 text-primary" />
-                    <span className="font-semibold text-foreground text-sm">Assignments</span>
+                    <span className="font-semibold text-foreground text-sm">
+                      Assignments
+                    </span>
                   </div>
                 </div>
 
@@ -93,7 +135,9 @@ export function StudentDashboard() {
                       className="px-3 py-1.5 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                       {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -142,14 +186,19 @@ export function StudentDashboard() {
                   </div>
                   <div className="flex items-center gap-2 ml-2">
                     <Bell className="w-4 h-4 text-primary" />
-                    <span className="font-semibold text-foreground text-sm">Announcements</span>
+                    <span className="font-semibold text-foreground text-sm">
+                      Announcements
+                    </span>
                   </div>
                 </div>
 
                 {/* Announcement Items */}
                 <div className="divide-y divide-border max-h-[540px] overflow-y-auto">
                   {announcements.map((announcement) => (
-                    <div key={announcement.id} className="p-4 hover:bg-accent/30 transition-colors">
+                    <div
+                      key={announcement.id}
+                      className="p-4 hover:bg-accent/30 transition-colors"
+                    >
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <h4 className="font-semibold text-foreground text-sm flex items-center gap-1.5">
                           <span>●</span> {announcement.title}

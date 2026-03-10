@@ -1,61 +1,16 @@
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
 import { PublicNavbar } from "../components/PublicNavbar";
-import { Code2, LogIn } from "lucide-react";
+import { Code2, UserPlus } from "lucide-react";
 
-export function Login() {
+export function Register() {
   const navigate = useNavigate();
 
-  // Listen for messages from OAuth popup
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      // Verify origin for security
-      if (event.origin !== window.location.origin) return;
-
-      // Handle successful auth
-      if (event.data.type === "OAUTH_SUCCESS") {
-        const { token, user } = event.data;
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        // Redirect based on role
-        if (user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/dashboard");
-        }
-      }
-
-      // Handle auth error
-      if (event.data.type === "OAUTH_ERROR") {
-        alert(`Authentication failed: ${event.data.message}`);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [navigate]);
-
-  const handleGoogleLogin = () => {
-    const width = 500;
-    const height = 600;
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
-
-    // Open Google OAuth in a popup
-    const popup = window.open(
-      "http://localhost:5000/api/auth/google",
-      "Google Login",
-      `width=${width},height=${height},left=${left},top=${top}`,
-    );
-
-    if (!popup) {
-      alert("Popup blocked! Please enable popups for this site.");
-    }
+  const handleGoogleSignup = () => {
+    window.location.href = "http://localhost:5000/api/auth/google";
   };
 
-  const handleRegister = () => {
-    navigate("/register");
+  const handleSignIn = () => {
+    navigate("/login");
   };
 
   return (
@@ -77,46 +32,46 @@ export function Login() {
 
             <div className="space-y-6">
               <h1 className="text-5xl font-bold text-white leading-tight">
-                Welcome Back to
+                Start Your
                 <br />
-                <span className="text-cyan-400">Your WDC Journey</span>
+                <span className="text-cyan-400">WDC Application</span>
               </h1>
               <p className="text-gray-300 text-lg leading-relaxed max-w-md">
-                Track your application, submit assignments, and collaborate with
-                mentors — all from a single dashboard.
+                Apply, complete assignments, track progress, and become part of
+                the WDC developer community.
               </p>
             </div>
           </div>
 
           <div className="text-gray-400 text-sm">
-            © 2026 WDC Induction Portal. System Secure using OAuth 2.0.
+            © 2026 WDC Induction Portal
           </div>
         </div>
 
-        {/* Right Side - Login Form */}
+        {/* Right Side - Registration Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
           <div className="w-full max-w-md">
             {/* Badge */}
             <div className="mb-8">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-cyan-500/20 text-cyan-400 rounded-full text-xs font-semibold border border-cyan-500/30">
-                <LogIn className="w-3.5 h-3.5" />
-                Auth Node Access
+                <UserPlus className="w-3.5 h-3.5" />
+                Create Profile
               </span>
             </div>
 
             {/* Header */}
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-foreground mb-2">
-                Sign In
+                Create Account
               </h2>
               <p className="text-muted-foreground">
-                Authenticate to access the portal
+                Initialize your WDC Induction Profile
               </p>
             </div>
 
-            {/* Google Login Button */}
+            {/* Google Signup Button */}
             <button
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleSignup}
               className="w-full px-4 py-3 bg-white text-gray-900 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center gap-3 mb-6"
             >
               <svg
@@ -153,14 +108,14 @@ export function Login() {
               </p>
             </div>
 
-            {/* Registration Link */}
+            {/* Sign In Link */}
             <div className="mt-6 text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <button
-                onClick={handleRegister}
+                onClick={handleSignIn}
                 className="text-cyan-600 hover:text-cyan-700 font-semibold transition-colors"
               >
-                Initialize Registration
+                Sign in
               </button>
             </div>
           </div>
