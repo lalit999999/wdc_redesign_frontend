@@ -26,6 +26,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   students: StudentData[];
   updateStudentStatus: (id: number, status: string) => void;
+  addStudent: (student: Omit<StudentData, "id">) => void;
+  addStudents: (students: Omit<StudentData, "id">[]) => void;
   assignments: AssignmentData[];
   addAssignment: (assignment: Omit<AssignmentData, "id">) => void;
   announcements: AnnouncementData[];
@@ -325,6 +327,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const addStudent = (student: Omit<StudentData, "id">) => {
+    setStudents((prev) => [
+      { ...student, id: Math.max(...prev.map((s) => s.id), 0) + 1 },
+      ...prev,
+    ]);
+  };
+
+  const addStudents = (studentsToAdd: Omit<StudentData, "id">[]) => {
+    setStudents((prev) => {
+      let maxId = Math.max(...prev.map((s) => s.id), 0);
+      const newStudents = studentsToAdd.map((student) => ({
+        ...student,
+        id: ++maxId,
+      }));
+      return [...newStudents, ...prev];
+    });
+  };
+
   const addAssignment = (assignment: Omit<AssignmentData, "id">) => {
     setAssignments((prev) => [
       { ...assignment, id: Math.max(...prev.map((a) => a.id), 0) + 1 },
@@ -348,6 +368,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user,
         students,
         updateStudentStatus,
+        addStudent,
+        addStudents,
         assignments,
         addAssignment,
         announcements,

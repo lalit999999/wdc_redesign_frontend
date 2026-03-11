@@ -27,3 +27,15 @@ export const createAnnouncement = (data) => {
 export const deleteAnnouncement = (id) => {
     return api.delete(`/announcements/${id}`);
 };
+
+export const createStudent = (data) => {
+    return api.post("/users", data);
+};
+
+export const createMultipleStudents = (studentsData) => {
+    return api.post("/users/bulk", studentsData);
+};
+
+export const getStudents = () => {
+    return api.get("/users");
+};
