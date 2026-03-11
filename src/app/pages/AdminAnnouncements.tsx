@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { createAnnouncement } from "../../api/adminApi";
 
 export function AdminAnnouncements() {
-  const { announcements, addAnnouncement } = useAuth();
+  const { announcements, addAnnouncement, refetchAnnouncements } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -45,6 +45,10 @@ export function AdminAnnouncements() {
       };
       await createAnnouncement(newAnnouncement);
       addAnnouncement(newAnnouncement);
+
+      // Refetch from backend to ensure persistence
+      await refetchAnnouncements();
+
       setTitle("");
       setMessage("");
       setType("info");

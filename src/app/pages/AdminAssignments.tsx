@@ -1,19 +1,28 @@
 import { DashboardSidebar } from "../components/DashboardSidebar";
-import { Plus, X, Calendar, Tag } from "lucide-react";
+import { Plus, X, Calendar, Tag, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { createAssignment } from "../../api/adminApi";
 
 export function AdminAssignments() {
-  const { assignments, addAssignment } = useAuth();
+  const { assignments, addAssignment, refetchAssignments } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleCreate = async () => {
-    if (!title || !description || !deadline || !category) return;
+    if (!title || !description || !deadline || !category) {
+      setError("All fields are required");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
     try {
       const newAssignment = {
         title,
@@ -22,16 +31,32 @@ export function AdminAssignments() {
         category,
         status: "active",
       };
-      await createAssignment(newAssignment);
+
+      console.log("Creating assignment:", newAssignment);
+      const response = await createAssignment(newAssignment);
+      console.log("Assignment created successfully:", response);
+
+      // Add to local state immediately for UI feedback
       addAssignment(newAssignment);
+
+      // Refetch from backend to ensure persistence and get the actual ID
+      await refetchAssignments();
+
       setTitle("");
       setDescription("");
       setDeadline("");
       setCategory("");
       setShowForm(false);
+      setError("");
     } catch (error) {
       console.error("Error creating assignment:", error);
-      alert("Failed to create assignment");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : error?.response?.data?.message || "Failed to create assignment";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,11 +147,22 @@ export function AdminAssignments() {
                 </div>
                 <button
                   onClick={handleCreate}
-                  disabled={!title || !description || !deadline || !category}
+                  disabled={
+                    !title || !description || !deadline || !category || loading
+                  }
                   className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Create Assignment
+                  {loading ? "Creating..." : "Create Assignment"}
                 </button>
+                {error && (
+                  <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex gap-2">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-red-600 font-medium">Error</p>
+                      <p className="text-sm text-red-600">{error}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
