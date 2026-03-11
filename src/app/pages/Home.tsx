@@ -154,7 +154,7 @@ export function Home() {
               return (
                 <div
                   key={module.title}
-                  className="p-6 bg-card border border-border rounded-lg hover:shadow-lg transition-shadow"
+                  className="p-6 bg-card border border-border rounded-lg hover:shadow-xl hover:border-primary/50 transition-all duration-300 hover:scale-105"
                 >
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-primary" />
@@ -182,7 +182,7 @@ export function Home() {
             {projects.map((project) => (
               <div
                 key={project.name}
-                className="p-6 bg-card border border-border rounded-lg hover:shadow-lg transition-shadow"
+                className="p-6 bg-card border border-border rounded-lg hover:shadow-xl hover:border-primary/50 transition-all duration-300 hover:scale-105"
               >
                 <h3 className="text-lg font-semibold mb-2 text-foreground">
                   {project.name}
