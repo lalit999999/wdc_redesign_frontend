@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { getAssignments, submitAssignment } from "../../api/assignmentApi";
 import { getAnnouncements } from "../../api/announcementApi";
 import { getProfile } from "../../api/userApi";
-import { getStudents } from "../../api/adminApi";
+import { getStudents, approveUser, rejectUser } from "../../api/adminApi";
 
 type UserRole = "student" | "admin";
 
@@ -29,7 +29,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   students: StudentData[];
-  updateStudentStatus: (id: number, status: string) => void;
+  updateStudentStatus: (id: number, status: string) => Promise<void>;
   addStudent: (student: Omit<StudentData, "id">) => void;
   addStudents: (students: Omit<StudentData, "id">[]) => void;
   refetchStudents: () => Promise<void>;
@@ -41,6 +41,7 @@ interface AuthContextType {
   refetchAnnouncements: () => Promise<void>;
   loadingAssignments: boolean;
   loadingAnnouncements: boolean;
+  loadingStudents: boolean;
 }
 
 export interface StudentData {
@@ -101,6 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useState<AnnouncementData[]>(initialAnnouncements);
   const [loadingAssignments, setLoadingAssignments] = useState(true);
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+  const [loadingStudents, setLoadingStudents] = useState(true);
 
   // Initialize user from localStorage on app load
   useEffect(() => {
@@ -185,13 +187,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchAnnouncements();
   }, []);
 
-  // Fetch students from backend when user is authenticated
+  // Fetch students from backend when user is authenticated (admin only)
   useEffect(() => {
     const fetchStudents = async () => {
       try {
+        setLoadingStudents(true);
         const token = localStorage.getItem("token");
-        if (!token) {
-          console.log("No token found, using initial students");
+        const userStr = localStorage.getItem("user");
+
+        // Only fetch students if user is admin
+        if (!token || !userStr) {
+          console.log("No token or user found, skipping students fetch");
+          setLoadingStudents(false);
+          return;
+        }
+
+        try {
+          const userData = JSON.parse(userStr);
+          if (userData.role !== "admin") {
+            console.log("User is not admin, skipping students fetch");
+            setLoadingStudents(false);
+            return;
+          }
+        } catch (e) {
+          console.log("Could not parse user role, skipping students fetch");
+          setLoadingStudents(false);
           return;
         }
 
@@ -245,6 +265,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error("Failed to fetch students:", error);
         // Keep initial students on error
+      } finally {
+        setLoadingStudents(false);
       }
     };
 
@@ -269,9 +291,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    // Clear user state
     setUser(null);
+
+    // Clear all user-related data
+    setStudents([]);
+    setAssignments([]);
+    setAnnouncements([]);
+
+    // Clear localStorage completely
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.clear(); // Clear all remaining user data
   };
 
   const refetchAssignments = async () => {
@@ -361,10 +392,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateStudentStatus = (id: number, status: string) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, status } : s)),
-    );
+  const updateStudentStatus = async (id: number, status: string) => {
+    try {
+      // Update local state optimistically
+      setStudents((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, status } : s)),
+      );
+
+      // Call the appropriate API endpoint
+      if (status === "Shortlisted") {
+        await approveUser(id);
+        console.log(`Student ${id} approved (shortlisted)`);
+      } else if (status === "Rejected") {
+        await rejectUser(id);
+        console.log(`Student ${id} rejected`);
+      }
+
+      // Refetch students to ensure consistency with backend
+      await refetchStudents();
+    } catch (error) {
+      console.error("Error updating student status:", error);
+      // Revert local state on error
+      await refetchStudents();
+      throw error;
+    }
   };
 
   const addStudent = (student: Omit<StudentData, "id">) => {
@@ -425,6 +476,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         refetchAnnouncements,
         loadingAssignments,
         loadingAnnouncements,
+        loadingStudents,
       }}
     >
       {children}

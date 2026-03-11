@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { PublicNavbar } from "../components/PublicNavbar";
-import { Code2, UserPlus } from "lucide-react";
+import { UserPlus } from "lucide-react";
 /// <reference types="vite/client" />
 
 export function Register() {
@@ -23,9 +23,11 @@ export function Register() {
         <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-gradient-to-br from-slate-900 to-slate-800">
           <div>
             <div className="inline-flex items-center gap-3 mb-12">
-              <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                <Code2 className="w-6 h-6 text-white" />
-              </div>
+              <img
+                src="https://res.cloudinary.com/dsmyka9cr/image/upload/v1770575382/nitplogo_je6ekp.png"
+                alt="NITP Logo"
+                className="w-10 h-10 object-contain"
+              />
               <span className="text-2xl font-bold text-white">
                 WDC Induction Portal
               </span>

@@ -1,9 +1,10 @@
 import { DashboardSidebar } from "../components/DashboardSidebar";
+import { Loader } from "../components/Loader";
 import { useAuth } from "../context/AuthContext";
 import { Clock, CheckCircle } from "lucide-react";
 
 export function StudentAssignments() {
-  const { assignments } = useAuth();
+  const { assignments, loadingAssignments } = useAuth();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -37,55 +38,59 @@ export function StudentAssignments() {
             Assignments
           </h1>
 
-          <div className="space-y-4">
-            {assignments.map((assignment) => (
-              <div
-                key={assignment.id}
-                className="p-6 bg-card border border-border rounded-lg hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2 text-foreground">
-                      {assignment.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {assignment.description}
-                    </p>
+          {loadingAssignments ? (
+            <Loader />
+          ) : (
+            <div className="space-y-4">
+              {assignments.map((assignment, index) => (
+                <div
+                  key={assignment._id || assignment.id || index}
+                  className="p-6 bg-card border border-border rounded-lg hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-2 text-foreground">
+                        {assignment.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {assignment.description}
+                      </p>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded text-xs font-medium border ${getStatusColor(assignment.status)}`}
+                    >
+                      {getStatusLabel(assignment.status)}
+                    </span>
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded text-xs font-medium border ${getStatusColor(assignment.status)}`}
-                  >
-                    {getStatusLabel(assignment.status)}
-                  </span>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm">
-                    {assignment.status === "submitted" ? (
-                      <div className="flex items-center gap-2 text-green-500">
-                        <CheckCircle className="w-4 h-4" />
-                        <span>Submitted on {assignment.deadline}</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        <span>
-                          Due: {assignment.deadline}
-                          {assignment.daysLeft > 0 &&
-                            ` (${assignment.daysLeft} days left)`}
-                        </span>
-                      </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm">
+                      {assignment.status === "submitted" ? (
+                        <div className="flex items-center gap-2 text-green-500">
+                          <CheckCircle className="w-4 h-4" />
+                          <span>Submitted on {assignment.deadline}</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock className="w-4 h-4" />
+                          <span>
+                            Due: {assignment.deadline}
+                            {assignment.daysLeft > 0 &&
+                              ` (${assignment.daysLeft} days left)`}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    {assignment.status !== "submitted" && (
+                      <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity text-sm">
+                        View Details
+                      </button>
                     )}
                   </div>
-                  {assignment.status !== "submitted" && (
-                    <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity text-sm">
-                      View Details
-                    </button>
-                  )}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

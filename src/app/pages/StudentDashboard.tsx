@@ -1,4 +1,5 @@
 import { DashboardSidebar } from "../components/DashboardSidebar";
+import { Loader } from "../components/Loader";
 import { useAuth } from "../context/AuthContext";
 import {
   Bell,
@@ -12,7 +13,13 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 export function StudentDashboard() {
-  const { user, assignments, announcements } = useAuth();
+  const {
+    user,
+    assignments,
+    announcements,
+    loadingAssignments,
+    loadingAnnouncements,
+  } = useAuth();
   const [categoryFilter, setCategoryFilter] = useState("All");
 
   const categories = [
@@ -144,33 +151,39 @@ export function StudentDashboard() {
                 </div>
 
                 {/* Assignment Cards Grid */}
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[540px] overflow-y-auto">
-                  {filteredAssignments.map((assignment) => (
-                    <div
-                      key={assignment.id}
-                      className="p-4 bg-background border border-border rounded-lg hover:border-primary/40 transition-colors"
-                    >
-                      <h3 className="font-semibold text-foreground mb-2 text-sm">
-                        {assignment.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                        {assignment.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-xs text-yellow-500">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>Due: {assignment.deadline}</span>
+                {loadingAssignments ? (
+                  <div className="p-4">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[540px] overflow-y-auto">
+                    {filteredAssignments.map((assignment, index) => (
+                      <div
+                        key={assignment._id || assignment.id || index}
+                        className="p-4 bg-background border border-border rounded-lg hover:border-primary/40 transition-colors"
+                      >
+                        <h3 className="font-semibold text-foreground mb-2 text-sm">
+                          {assignment.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                          {assignment.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 text-xs text-yellow-500">
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>Due: {assignment.deadline}</span>
+                          </div>
+                          <Link
+                            to="/dashboard/final-submission"
+                            className="flex items-center gap-1 text-xs text-primary hover:underline"
+                          >
+                            View <ArrowRight className="w-3 h-3" />
+                          </Link>
                         </div>
-                        <Link
-                          to="/dashboard/final-submission"
-                          className="flex items-center gap-1 text-xs text-primary hover:underline"
-                        >
-                          View <ArrowRight className="w-3 h-3" />
-                        </Link>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -193,32 +206,38 @@ export function StudentDashboard() {
                 </div>
 
                 {/* Announcement Items */}
-                <div className="divide-y divide-border max-h-[540px] overflow-y-auto">
-                  {announcements.map((announcement) => (
-                    <div
-                      key={announcement.id}
-                      className="p-4 hover:bg-accent/30 transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <h4 className="font-semibold text-foreground text-sm flex items-center gap-1.5">
-                          <span>●</span> {announcement.title}
-                        </h4>
-                        {announcement.important && (
-                          <span className="shrink-0 px-2 py-0.5 rounded text-[10px] font-medium bg-red-500 text-white">
-                            Important
-                          </span>
-                        )}
+                {loadingAnnouncements ? (
+                  <div className="p-4">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border max-h-[540px] overflow-y-auto">
+                    {announcements.map((announcement, index) => (
+                      <div
+                        key={announcement._id || announcement.id || index}
+                        className="p-4 hover:bg-accent/30 transition-colors"
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <h4 className="font-semibold text-foreground text-sm flex items-center gap-1.5">
+                            <span>●</span> {announcement.title}
+                          </h4>
+                          {announcement.important && (
+                            <span className="shrink-0 px-2 py-0.5 rounded text-[10px] font-medium bg-red-500 text-white">
+                              Important
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                          {announcement.message}
+                        </p>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Calendar className="w-3 h-3" />
+                          <span>{announcement.date}</span>
+                        </div>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                        {announcement.message}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        <span>{announcement.date}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { Moon, Sun, Code2, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
@@ -10,8 +10,25 @@ export function PublicNavbar() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Get role from context or fallback to localStorage to handle race conditions
+  const getUserRole = () => {
+    if (user?.role) {
+      return user.role;
+    }
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const userData = JSON.parse(userStr);
+        return userData.role;
+      }
+    } catch (error) {
+      console.error("Failed to parse user from localStorage:", error);
+    }
+    return "student";
+  };
+
   const getDashboardUrl = () => {
-    return user?.role === "admin" ? "/admin" : "/dashboard";
+    return getUserRole() === "admin" ? "/admin" : "/dashboard";
   };
 
   return (
@@ -19,9 +36,13 @@ export function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link
           to="/"
-          className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-foreground hover:opacity-90 transition-opacity"
         >
-          <Code2 className="w-6 h-6" />
+          <img
+            src="https://res.cloudinary.com/dsmyka9cr/image/upload/v1770575382/nitplogo_je6ekp.png"
+            alt="NITP Logo"
+            className="w-8 h-8 object-contain"
+          />
           <span className="font-semibold text-sm sm:text-base">
             WDC Induction Portal
           </span>

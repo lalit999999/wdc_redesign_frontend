@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router";
 import {
-  Code2,
   Home,
   User,
   FileText,
@@ -21,6 +20,35 @@ export function DashboardSidebar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Get role from context or fallback to localStorage to handle race conditions
+  const getUserRole = () => {
+    console.log(user);
+
+    if (user?.role) {
+      return user.role;
+    }
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const userData = JSON.parse(userStr);
+        return userData.role;
+      }
+    } catch (error) {
+      console.error("Failed to parse user from localStorage:", error);
+    }
+    return "student";
+  };
+
+  const userRole = getUserRole();
+
+  const handleProfileClick = () => {
+    if (userRole === "admin") {
+      navigate(`/admin/students/${user._id}`);
+    } else {
+      navigate("/dashboard/profile");
+    }
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -63,16 +91,20 @@ export function DashboardSidebar() {
     { path: "/admin/submissions", label: "Submissions", icon: FileCheck },
   ];
 
-  const links = user?.role === "admin" ? adminLinks : studentLinks;
+  const links = userRole === "admin" ? adminLinks : studentLinks;
 
   const sidebarContent = (
     <>
       <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
         <Link
-          to={user?.role === "admin" ? "/admin" : "/dashboard"}
+          to={userRole === "admin" ? "/admin" : "/dashboard"}
           className="flex items-center gap-2 text-sidebar-foreground hover:opacity-80 transition-opacity"
         >
-          <Code2 className="w-6 h-6" />
+          <img
+            src="https://res.cloudinary.com/dsmyka9cr/image/upload/v1770575382/nitplogo_je6ekp.png"
+            alt="NITP Logo"
+            className="w-8 h-8 object-contain"
+          />
           <div>
             <span className="font-semibold block leading-tight">WDC</span>
             <span className="text-xs text-muted-foreground">
@@ -130,19 +162,22 @@ export function DashboardSidebar() {
 
       {/* User info at bottom */}
       <div className="p-3 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 px-3 py-2">
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs text-primary font-medium">
-            {user?.name?.charAt(0) || "U"}
+        <button
+          onClick={handleProfileClick}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sidebar-accent/50 transition-colors text-left"
+        >
+          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs text-primary font-medium flex-shrink-0">
+            {user?.fullName?.charAt(0) || "U"}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm text-sidebar-foreground truncate">
-              {user?.name}
+              {user?.fullName}
             </p>
             <p className="text-xs text-muted-foreground truncate">
               {user?.email}
             </p>
           </div>
-        </div>
+        </button>
       </div>
     </>
   );
@@ -162,7 +197,11 @@ export function DashboardSidebar() {
           to="/"
           className="flex items-center gap-2 ml-3 text-sidebar-foreground"
         >
-          <Code2 className="w-5 h-5" />
+          <img
+            src="https://res.cloudinary.com/dsmyka9cr/image/upload/v1770575382/nitplogo_je6ekp.png"
+            alt="NITP Logo"
+            className="w-5 h-5 object-contain"
+          />
           <span className="font-semibold text-sm">WDC Portal</span>
         </Link>
       </div>

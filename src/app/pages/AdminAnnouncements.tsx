@@ -1,11 +1,17 @@
 import { DashboardSidebar } from "../components/DashboardSidebar";
+import { Loader } from "../components/Loader";
 import { Plus, X, Calendar, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { createAnnouncement } from "../../api/adminApi";
 
 export function AdminAnnouncements() {
-  const { announcements, addAnnouncement, refetchAnnouncements } = useAuth();
+  const {
+    announcements,
+    addAnnouncement,
+    refetchAnnouncements,
+    loadingAnnouncements,
+  } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -179,44 +185,50 @@ export function AdminAnnouncements() {
           )}
 
           {/* Announcements List */}
-          <div className="space-y-4">
-            {announcements.map((announcement) => (
-              <div
-                key={announcement.id}
-                className={`p-6 bg-card border border-border border-l-4 rounded-lg ${getTypeColor(announcement.type)}`}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {announcement.title}
-                    </h3>
-                    {announcement.important && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-red-500 text-white">
-                        Important
-                      </span>
-                    )}
+          {loadingAnnouncements ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="space-y-4">
+                {announcements.map((announcement, index) => (
+                  <div
+                    key={announcement._id || announcement.id || index}
+                    className={`p-6 bg-card border border-border border-l-4 rounded-lg ${getTypeColor(announcement.type)}`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {announcement.title}
+                        </h3>
+                        {announcement.important && (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-red-500 text-white">
+                            Important
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-muted-foreground text-right flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>
+                          {announcement.date} • {announcement.time}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {announcement.message}
+                    </p>
                   </div>
-                  <div className="text-xs text-muted-foreground text-right flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>
-                      {announcement.date} • {announcement.time}
-                    </span>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {announcement.message}
-                </p>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {announcements.length === 0 && (
-            <div className="p-12 bg-card border border-border rounded-lg text-center">
-              <p className="text-muted-foreground">
-                No announcements yet. Click "Create Announcement" to get
-                started.
-              </p>
-            </div>
+              {announcements.length === 0 && (
+                <div className="p-12 bg-card border border-border rounded-lg text-center">
+                  <p className="text-muted-foreground">
+                    No announcements yet. Click "Create Announcement" to get
+                    started.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

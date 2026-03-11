@@ -1,11 +1,13 @@
 import { DashboardSidebar } from "../components/DashboardSidebar";
+import { Loader } from "../components/Loader";
 import { Plus, X, Calendar, Tag, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { createAssignment } from "../../api/adminApi";
 
 export function AdminAssignments() {
-  const { assignments, addAssignment, refetchAssignments } = useAuth();
+  const { assignments, addAssignment, refetchAssignments, loadingAssignments } =
+    useAuth();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -168,46 +170,52 @@ export function AdminAssignments() {
           )}
 
           {/* Assignments List */}
-          <div className="space-y-4">
-            {assignments.map((assignment) => (
-              <div
-                key={assignment.id}
-                className="p-5 bg-card border border-border rounded-lg"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-foreground">
-                        {assignment.title}
-                      </h3>
-                      <span className="px-2 py-0.5 rounded text-xs bg-primary/10 text-primary flex items-center gap-1">
-                        <Tag className="w-3 h-3" />
-                        {assignment.category}
+          {loadingAssignments ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="space-y-4">
+                {assignments.map((assignment, index) => (
+                  <div
+                    key={assignment._id || assignment.id || index}
+                    className="p-5 bg-card border border-border rounded-lg"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-semibold text-foreground">
+                            {assignment.title}
+                          </h3>
+                          <span className="px-2 py-0.5 rounded text-xs bg-primary/10 text-primary flex items-center gap-1">
+                            <Tag className="w-3 h-3" />
+                            {assignment.category}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {assignment.description}
+                        </p>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>Due: {assignment.deadline}</span>
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20">
+                        {assignment.status}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {assignment.description}
-                    </p>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>Due: {assignment.deadline}</span>
-                    </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20">
-                    {assignment.status}
-                  </span>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {assignments.length === 0 && (
-            <div className="p-12 bg-card border border-border rounded-lg text-center">
-              <p className="text-muted-foreground">
-                No assignments created yet. Click "Create Assignment" to get
-                started.
-              </p>
-            </div>
+              {assignments.length === 0 && (
+                <div className="p-12 bg-card border border-border rounded-lg text-center">
+                  <p className="text-muted-foreground">
+                    No assignments created yet. Click "Create Assignment" to get
+                    started.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

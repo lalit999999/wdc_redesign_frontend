@@ -1,4 +1,5 @@
 import { DashboardSidebar } from "../components/DashboardSidebar";
+import { Loader } from "../components/Loader";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -14,11 +15,30 @@ import {
 } from "lucide-react";
 
 export function AdminStudentProfile() {
-  const { students, updateStudentStatus } = useAuth();
+  const { students, updateStudentStatus, loadingStudents } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const student = students.find((s) => s.id === Number(id));
+  const student = students.find((s) => String(s.id) === String(id));
+
+  if (loadingStudents) {
+    return (
+      <div className="min-h-screen flex">
+        <DashboardSidebar />
+        <main className="flex-1 lg:ml-60 pt-14 lg:pt-0">
+          <div className="max-w-4xl mx-auto p-4 sm:p-8">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
+            </button>
+            <Loader />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (!student) {
     return (
@@ -42,10 +62,11 @@ export function AdminStudentProfile() {
   }
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Shortlisted":
+    const lowerStatus = status.toLowerCase();
+    switch (lowerStatus) {
+      case "shortlisted":
         return "bg-green-500/10 text-green-500 border-green-500/20";
-      case "Rejected":
+      case "rejected":
         return "bg-red-500/10 text-red-500 border-red-500/20";
       default:
         return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
