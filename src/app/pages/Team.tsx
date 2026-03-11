@@ -4,31 +4,31 @@ import { Github, Linkedin, Mail } from "lucide-react";
 
 export function Team() {
   const facultyCoordinator = {
-    name: "Rajvi Noh",
-    role: "Faculty Coordinator",
-    description:
-      "Guiding the Web Development Club in building cutting-edge solutions for the institute",
+    name: "Balaji-Naik",
+    role: "Professor Coordinator",
+    description: "Guiding the WDC team and overseeing projects.",
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-    email: "rajvi@nitp.ac.in",
+    email: "balaji@nitp.ac.in",
   };
 
   const teamMembers = [
     {
-      name: "Aakrish Kumar Singh",
+      name: "Aashish Kumar Singh",
       role: "Lead Developer",
       description:
-        "Full-stack engineer specializing in React and Node.js ecosystems",
+        "Optimized website performance using caching, managed AWS deployments, and co-developed CICD pipelines. Designed and maintained CI/CD pipelines, with regular system monitoring and log analysis.",
       photo:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "aakrish@nitp.ac.in",
+      email: "aashish@nitp.ac.in",
     },
     {
       name: "Aakash Tiwari",
-      role: "Backend Architect",
-      description: "Database design and API development expert",
+      role: "Developer",
+      description:
+        "Developed faculty profile cards and detailed profiles for departments. Enhanced academic and research sections including syllabus, vision, mission.",
       photo:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
       github: "https://github.com",
@@ -36,84 +36,70 @@ export function Team() {
       email: "aakash@nitp.ac.in",
     },
     {
-      name: "Seyush Udhoti",
-      role: "Frontend Lead",
-      description: "UI/UX implementation and modern web technologies",
+      name: "Suyash Vishnoi",
+      role: "Developer",
+      description:
+        "Developed Admin Backend Panel with secure event updates and file uploads. Redesigned Facilities section with responsive layouts.",
       photo:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "seyush@nitp.ac.in",
+      email: "suyash@nitp.ac.in",
     },
     {
-      name: "Arjun Kumar Mishra",
-      role: "Systems Engineer",
-      description: "Performance optimization and system architecture",
+      name: "Aman Kumar Mishra",
+      role: "Developer",
+      description:
+        "Developed dynamic About Us section with content management capabilities. Implemented Faculty Administration Profile Management system.",
       photo:
         "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "arjun@nitp.ac.in",
+      email: "aman@nitp.ac.in",
     },
     {
-      name: "Tejaswini Venkatesini",
-      role: "Database Administrator",
-      description: "Data management and query optimization specialist",
+      name: "TATIKONDA VENKATESH",
+      role: "Developer",
+      description:
+        "Redesigned the Mechanical Department page with a modern layout. Designed department page layouts in Figma for a polished look.",
       photo:
         "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "tejaswini@nitp.ac.in",
+      email: "tatikonda@nitp.ac.in",
     },
     {
-      name: "Sanidney Kumar Goud",
-      role: "DevOps Engineer",
-      description: "Cloud infrastructure and deployment specialist",
+      name: "Sandeep Kumar Gond",
+      role: "Developer",
+      description:
+        "Developed the Physics Department section with structured and accessible information. Enhanced Academic section content for clarity and improved navigation.",
       photo:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "sanidney@nitp.ac.in",
+      email: "sandeep@nitp.ac.in",
     },
     {
-      name: "Harshvir Shirta",
-      role: "Creative Director",
-      description: "Design and user experience specialist",
+      name: "NAVNEET SHREYA",
+      role: "Developer",
+      description:
+        "Developed Chemical Science & Technology pages with Tailwind-styled React components. Implemented styling changes and updates across admin panel buttons.",
       photo:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "harshvir@nitp.ac.in",
+      email: "navneet@nitp.ac.in",
     },
     {
-      name: "Chhatrapati Sachid",
-      role: "Tech Lead",
-      description: "Technical architecture and strategic planning",
+      name: "Chennupalli Rohith",
+      role: "Developer",
+      description:
+        "Completed NIT-P-ICT website modules and added announcement cards. Developed Proctorial Board section in main website.",
       photo:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
       github: "https://github.com",
       linkedin: "https://linkedin.com",
-      email: "chhatrapati@nitp.ac.in",
-    },
-    {
-      name: "Alok Chandra",
-      role: "Full Stack Developer",
-      description: "End-to-end development and integration specialist",
-      photo:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      email: "alok@nitp.ac.in",
-    },
-    {
-      name: "Saravpod Kumar",
-      role: "Senior Developer",
-      description: "Technical mentoring and code quality assurance",
-      photo:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      email: "saravpod@nitp.ac.in",
+      email: "chennu@nitp.ac.in",
     },
   ];
 
@@ -124,7 +110,7 @@ export function Team() {
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-semibold mb-4 text-foreground">
+            <h1 className="text-4xl md:text-5xl font-semibold mb-4 bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-600 bg-clip-text text-transparent">
               Meet the Team
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

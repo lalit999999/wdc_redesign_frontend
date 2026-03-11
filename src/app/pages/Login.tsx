@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { PublicNavbar } from "../components/PublicNavbar";
@@ -44,7 +46,7 @@ export function Login() {
 
     // Open Google OAuth in a popup
     const popup = window.open(
-      "http://localhost:5000/api/auth/google",
+      `${import.meta.env.VITE_API_BASE_URL}/auth/google`,
       "Google Login",
       `width=${width},height=${height},left=${left},top=${top}`,
     );

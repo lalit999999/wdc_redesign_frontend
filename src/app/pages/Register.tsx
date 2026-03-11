@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router";
 import { PublicNavbar } from "../components/PublicNavbar";
 import { Code2, UserPlus } from "lucide-react";
+/// <reference types="vite/client" />
 
 export function Register() {
   const navigate = useNavigate();
 
   const handleGoogleSignup = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
   };
 
   const handleSignIn = () => {
